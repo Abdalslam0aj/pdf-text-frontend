@@ -7,6 +7,12 @@
   pointer-events: none;
 }
 
+.pdf-image {
+  margin-top: 20px;
+  height: 20vmin;
+  width: 20vmin;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;

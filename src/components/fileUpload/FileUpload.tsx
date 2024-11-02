@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import './FileUpload.css';
+import { uploadPdfToText } from '../../services/pdfTextService'; 
+
 
 function FileUpload() {
   const [file, setFile] = useState(null);
@@ -9,14 +11,23 @@ function FileUpload() {
 
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
+    setText('');
+    setMessage('');
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     if (!file) {
       setMessage('Please select a file to upload.');
       return;
     }
+
+    if (file.type !== 'application/pdf') {
+      setMessage('Please select a valid pdf file');
+      return;
+    } 
+    
     setIsLoading(true);
 
     const formData = new FormData();
@@ -25,16 +36,8 @@ function FileUpload() {
     debugger;
 
     try {
-      const response = await fetch('http://localhost:3001/pdf/ToText', {
-        method: 'POST',
-        body: formData,
-      });
-      const result = await response.json();
-      if (response.ok) {
-        setText(result.text);
-      } else {
-        setMessage('Failed to upload file');
-      }
+      const result = await uploadPdfToText(file)
+      setText(result.text);
     } catch (error) {
       setMessage('Error uploading file');
     } finally {
